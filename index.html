@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nusu Made this</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, sans-serif;
+}
+
+body{
+  height:100vh;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:black;
+  color:white;
+}
+
+/* MAIN */
+.container{
+  text-align:center;
+}
+
+h1{
+  font-size:2.2rem;
+  margin-bottom:30px;
+}
+
+/* BUTTONS */
+.buttons{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+}
+
+button{
+  border:none;
+  padding:15px 30px;
+  border-radius:50px;
+  cursor:pointer;
+  font-size:1.2rem;
+  transition:0.2s;
+  font-weight:bold;
+}
+
+/* YES */
+#yesBtn{
+  background:#00d26a;
+  color:white;
+  animation:pulse 1s infinite;
+}
+
+/* NO */
+#noBtn{
+  background:white;
+  color:black;
+  position:absolute;
+}
+
+/* RESULT */
+#result{
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  animation:pop 1s ease;
+}
+
+#result h1{
+  font-size:2.5rem;
+}
+
+/* POOP FLOAT */
+.poop{
+  position:absolute;
+  font-size:20px;
+  animation:floatUp linear infinite;
+}
+
+/* ANIMATIONS */
+@keyframes floatUp{
+  0%{ transform:translateY(100vh); opacity:0;}
+  20%{ opacity:1;}
+  100%{ transform:translateY(-120vh); opacity:0;}
+}
+
+@keyframes pop{
+  0%{ transform:scale(0.5); opacity:0;}
+  100%{ transform:scale(1); opacity:1;}
+}
+
+@keyframes pulse{
+  0%{ transform:scale(1);}
+  50%{ transform:scale(1.1);}
+  100%{ transform:scale(1);}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container" id="mainContent">
+  <h1 id="question">uri mhata here 💩</h1>
+
+  <div class="buttons">
+    <button id="yesBtn">Yess 💩</button>
+    <button id="noBtn">No 😭</button>
+  </div>
+</div>
+
+<div id="result">
+  <h1>ndaizviziva 🖕🏽</h1>
+   <img src="200.webp" alt="funny gif">
+</div>
+
+<script>
+
+// funny prompts
+const questions = [
+  "are you sure? 💩",
+  "think properly 😭",
+  "you sure sure? 💩",
+  "don’t lie 😂",
+  "last chance 💩",
+  "accept it 😭",
+  "you know it 💩",
+  "stop denying 😭"
+];
+
+let index = 0;
+let yesSize = 1;
+
+const question = document.getElementById("question");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const result = document.getElementById("result");
+const main = document.getElementById("mainContent");
+
+// YES CLICK
+yesBtn.onclick = () => {
+  main.style.display = "none";
+  result.style.display = "flex";
+  createPoop();
+};
+
+// NO CLICK
+noBtn.onclick = () => {
+
+  if(index < questions.length){
+    question.innerText = questions[index];
+    index++;
+  }
+
+  yesSize += 0.2;
+  yesBtn.style.transform = `scale(${yesSize})`;
+};
+
+// ===== RUN AWAY BUTTON =====
+document.addEventListener("mousemove", (e) => {
+
+  const rect = noBtn.getBoundingClientRect();
+
+  const btnX = rect.left + rect.width / 2;
+  const btnY = rect.top + rect.height / 2;
+
+  const distance = Math.hypot(e.clientX - btnX, e.clientY - btnY);
+
+  const safeDistance = 110;
+
+  if(distance < safeDistance){
+
+    let angle = Math.atan2(btnY - e.clientY, btnX - e.clientX);
+
+    let moveX = Math.cos(angle) * safeDistance;
+    let moveY = Math.sin(angle) * safeDistance;
+
+    let newX = btnX + moveX - rect.width/2;
+    let newY = btnY + moveY - rect.height/2;
+
+    const maxX = window.innerWidth - rect.width;
+    const maxY = window.innerHeight - rect.height;
+
+    newX = Math.max(0, Math.min(newX, maxX));
+    newY = Math.max(0, Math.min(newY, maxY));
+
+    noBtn.style.left = newX + "px";
+    noBtn.style.top = newY + "px";
+  }
+
+});
+
+// MOBILE
+document.addEventListener("touchmove", (e) => {
+
+  const touch = e.touches[0];
+  const rect = noBtn.getBoundingClientRect();
+
+  const btnX = rect.left + rect.width / 2;
+  const btnY = rect.top + rect.height / 2;
+
+  const distance = Math.hypot(touch.clientX - btnX, touch.clientY - btnY);
+
+  const safeDistance = 110;
+
+  if(distance < safeDistance){
+
+    let angle = Math.atan2(btnY - touch.clientY, btnX - touch.clientX);
+
+    let moveX = Math.cos(angle) * safeDistance;
+    let moveY = Math.sin(angle) * safeDistance;
+
+    let newX = btnX + moveX - rect.width/2;
+    let newY = btnY + moveY - rect.height/2;
+
+    const maxX = window.innerWidth - rect.width;
+    const maxY = window.innerHeight - rect.height;
+
+    newX = Math.max(0, Math.min(newX, maxX));
+    newY = Math.max(0, Math.min(newY, maxY));
+
+    noBtn.style.left = newX + "px";
+    noBtn.style.top = newY + "px";
+  }
+
+});
+
+// POOP ANIMATION
+function createPoop(){
+
+  setInterval(()=>{
+
+    const p = document.createElement("div");
+    p.classList.add("poop");
+    p.innerHTML = "💩";
+
+    p.style.left = Math.random()*100 + "vw";
+    p.style.fontSize = (Math.random()*30 + 20)+"px";
+    p.style.animationDuration = (Math.random()*3 + 3)+"s";
+
+    document.body.appendChild(p);
+
+    setTimeout(()=>p.remove(),6000);
+
+  },200);
+
+}
+
+</script>
+
+</body>
+</html>
